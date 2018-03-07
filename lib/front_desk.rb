@@ -19,16 +19,16 @@ module Hotel
      return new_res
    end
 
-   # def search_res_by_date(date)
-   #   day = Date.parse(date)
-   #   res_on_day = []
-   #   @reservations.each do |reservation|
-   #     if reservation.start_date < day && reservation.end_date > day
-   #       res_on_day << reservation
-   #     end
-   #   end
-   # end
-
+   def search_res_by_date(date)
+     day = Date.parse(date)
+     res_on_day = []
+     @reservations.each do |reservation|
+       if reservation.start_date <= day && reservation.end_date > day
+         res_on_day << reservation
+       end
+     end
+     return res_on_day
+   end
 
     # def created_rooms()
     #   all_rooms = []
