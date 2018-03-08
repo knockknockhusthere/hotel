@@ -12,9 +12,26 @@ module Hotel
       @reservations = []
     end
 
-    def create_reservation(room_id, start_day,end_day)
+    def create_reservation(room_id, start_day, end_day)
       id = @reservations.length + 1
       new_res = ""
+
+      throw_date_args(start_day,end_day)
+      start_date = Date.parse(start_day)
+      end_date = Date.parse(end_day)
+
+      available_rooms = find_available_rooms(start_day, end_day)
+
+      if (available_rooms.include?room_id)
+        new_res = Hotel::Reservation.new(res_id: id, room_id: room_id, start_date: start_date, end_date: end_date)
+        @reservations << new_res
+        return new_res
+      else
+        raise ArgumentError.new("Sorry, this room is not available on these dates!")
+      end
+    end
+
+    def throw_date_args(start_day,end_day)
       start_date = Date.parse(start_day)
       end_date = Date.parse(end_day)
 
@@ -25,10 +42,6 @@ module Hotel
       if (start_date == end_date || start_date > end_date)
         raise ArgumentError.new("The reservation must end after the start date!")
       end
-
-      new_res = Hotel::Reservation.new(res_id: id, room_id: room_id, start_date: start_date, end_date: end_date)
-      @reservations << new_res
-      return new_res
     end
 
     def search_res_by_date(date)
@@ -66,7 +79,8 @@ module Hotel
     end
 
     def find_available_rooms(start_date,end_date)
-      available_rooms = @rooms_list
+      throw_date_args(start_date,end_date)
+      available_rooms = (1..20).to_a
       search_range = (Date.parse(start_date)...Date.parse(end_date)).to_a
       @reservations.each do |res|
         if available_rooms.include?(res.room_id)
@@ -77,8 +91,12 @@ module Hotel
           end
         end
       end
-      return available_rooms
+      if available_rooms.length == 0
+        puts "Sorry, we are fully booked! There are no available rooms"
+        return nil
+      else
+        return available_rooms
+      end
     end
-  
   end
 end

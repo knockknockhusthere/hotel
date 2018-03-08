@@ -20,7 +20,7 @@ describe 'FrontDesk class' do
 
   describe 'create_reservation method' do
     before do
-      @new_res = @new_front_desk.create_reservation(4, '2018-03-09', '2018-3-14')
+      @new_res = @new_front_desk.create_reservation(20, '2018-03-09', '2018-3-14')
     end
 
     it 'can create a new instance of reservation' do
@@ -36,12 +36,18 @@ describe 'FrontDesk class' do
       @new_res.end_date.must_be_instance_of Date
     end
 
+    it 'raises an ArgumentError if chosen room is unavailable' do
+      proc{@new_front_desk.create_reservation(20,'2018-03-10', '2018-03-16')}.must_raise ArgumentError
+    end
+  end
+
+  describe 'throw_date_args' do
     it 'raises an error if start date is before today' do
-      proc{@new_front_desk.create_reservation(3, '2018-03-01', '2018-3-14')}.must_raise ArgumentError
+      proc{@new_front_desk.throw_date_args('2018-03-01', '2018-3-14')}.must_raise ArgumentError
     end
 
     it 'raises an error if start date and end date are the same' do
-      proc{@new_front_desk.create_reservation(2, '2018-03-14', '2018-3-14')}.must_raise ArgumentError
+      proc{@new_front_desk.throw_date_args('2018-03-14', '2018-3-14')}.must_raise ArgumentError
     end
   end
 
@@ -129,19 +135,27 @@ describe 'FrontDesk class' do
   end
 
   describe 'find_available_rooms method' do
-    before do
+    it 'can return a list of available rooms' do
       @new_front_desk.create_reservation(4, '2018-03-09', '2018-03-24')
       @new_front_desk.create_reservation(5, '2018-03-10', '2018-03-14')
       @new_front_desk.create_reservation(6, '2018-03-12', '2018-03-30')
-    end
-    it 'can return a list of available rooms' do
       avail_list = @new_front_desk.find_available_rooms('2018-03-12', '2018-03-29')
       avail_list.length.must_equal 17
       avail_list.must_be_kind_of Array
       avail_list[0].must_be_kind_of Integer
       avail_list[0].must_equal 1
     end
+    it 'Informs the user no rooms are available' do
+      20.times do |i| @new_front_desk.create_reservation(i+1,'2018-03-10', '2018-03-16')
+        i += 1
+      end
+
+      @new_front_desk.find_available_rooms('2018-03-10', '2018-03-16').must_be_nil
+    end
+
+    it 'shows a room as available after guest checks out' do
+      @new_front_desk.create_reservation(4, '2018-03-09', '2018-03-24')
+      @new_front_desk.create_reservation(4, '2018-04-01','2018-04-13')
+    end
   end
 end
-
-#out of rooms handle
