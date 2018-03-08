@@ -81,8 +81,9 @@ module Hotel
 
     def find_available_rooms(start_date,end_date)
       throw_date_args(start_date,end_date)
-      available_rooms = (1..NUM_OF_ROOMS).to_a
+      available_rooms = @rooms_list
       search_range = (Date.parse(start_date)...Date.parse(end_date)).to_a
+
       @reservations.each do |res|
         if available_rooms.include?(res.room_id)
           res_range = ((res.start_date)...(res.end_date)).to_a
