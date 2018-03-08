@@ -98,6 +98,51 @@ describe 'FrontDesk class' do
       proc{ @new_front_desk.res_cost(30) }.must_raise ArgumentError
     end
   end
+
+  describe 'overlap? method' do
+    before do
+      @new_front_desk = Hotel::FrontDesk.new()
+      start_date1 = Date.parse('2018-04-19')
+      end_date1 = Date.parse('2018-04-25')
+      @first = (start_date1...end_date1).to_a
+      start_date2 = Date.parse('2018-04-17')
+      end_date2 = Date.parse('2018-04-23')
+      @second = (start_date2...end_date2).to_a
+      start_date3 = Date.parse('2018-05-17')
+      end_date3 = Date.parse('2018-05-23')
+      @third = (start_date3...end_date3).to_a
+    end
+
+    it 'can return true if given date ranges have overlap' do
+      @new_front_desk.overlap?(@first, @second).must_equal true
+    end
+
+    it 'can return false if given date ranges have no overlap' do
+      @new_front_desk.overlap?(@first, @third).must_equal false
+    end
+
+    it 'same last date and first date of another range return false' do
+      start_date1 = Date.parse('2018-04-25')
+      end_date1 = Date.parse('2018-04-28')
+      fourth = (start_date1...end_date1).to_a
+      @new_front_desk.overlap?(@first, fourth).must_equal false
+    end
+  end
+
+  describe 'find_available_rooms method' do
+    before do
+      @new_front_desk.create_reservation(1, '2018-03-09', '2018-03-24')
+      @new_front_desk.create_reservation(2, '2018-03-10', '2018-03-14')
+      @new_front_desk.create_reservation(6, '2018-03-12', '2018-03-30')
+    end
+    it 'can return a list of available rooms' do
+      avail_list = @new_front_desk.find_available_rooms('2018-03-12', '2018-03-29')
+      avail_list.length.must_equal 17
+      avail_list.must_be_kind_of Array
+      avail_list[0].must_be_kind_of Integer
+      avail_list[0].must_equal 3
+    end
+  end
 end
 
 #out of rooms handle

@@ -22,8 +22,8 @@ module Hotel
         raise ArgumentError.new("Reservation must start after today!")
       end
 
-      if (start_date == end_date)
-        raise ArgumentError.new("The reservation cannot start and end on the same date!")
+      if (start_date == end_date || start_date > end_date)
+        raise ArgumentError.new("The reservation must end after the start date!")
       end
 
       new_res = Hotel::Reservation.new(res_id: id, room_id: room_id, start_date: start_date, end_date: end_date)
@@ -55,24 +55,41 @@ module Hotel
       return res.total_cost
     end
 
-    def find_available_rooms(start_date, end_date)
-      available_rooms = []
-      @reservations.each do |res|
-        
+    def overlap?(range1,range2)
+      dates = [range1, range2]
+      overlap = dates.inject(:&)
+      if overlap.length > 0
+        return true
+      else
+        return false
       end
     end
 
-
-    # def find_available_room(start_day, end_day)
-    #   (start_day...end_day).each do |date|
-    #     rooms_list.each do |room|
-    #       while room.reserved_days != date
-    #         #I DONT KNOW. IS THIS LOOP RIGHT?
-    #
-    #       end
-    #     end
-    #   end
-    # end
-    # Do stuff with date
+    def find_available_rooms(start_date,end_date)
+      available_rooms = @rooms_list
+      search_range = (Date.parse(start_date)...Date.parse(end_date)).to_a
+      @reservations.each do |res|
+        if available_rooms.include?(res.room_id)
+          res_range = ((res.start_date)...(res.end_date)).to_a
+          occupied = overlap?(search_range,res_range)
+          if occupied
+            available_rooms.delete(res.room_id)
+          end
+        end
+      end
+      return available_rooms
+    end
+    # def find_available_rooms(start_date, end_date)
+    #   available_rooms = @room_list
+    #   @reservations.each do |res|
+    #     if available_rooms.include?(res.room_id)
+    #       date_range = (res.start_date...res.end_date).to_a
+    #       if date_range.include?(start_date) || date_range.include?(end_date)
+    #         available_rooms.delete(res.room_id)
+    #       end#end if
+    #     end#end if
+    #   end#end each
+    #   return available_rooms
+    # end#end find_available_rooms method
   end
 end
