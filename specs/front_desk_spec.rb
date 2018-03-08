@@ -37,11 +37,11 @@ describe 'FrontDesk class' do
     end
 
     it 'raises an error if start date is before today' do
-      proc{@new_front_desk.create_reservation(4, '2018-03-01', '2018-3-14')}.must_raise ArgumentError
+      proc{@new_front_desk.create_reservation(3, '2018-03-01', '2018-3-14')}.must_raise ArgumentError
     end
 
     it 'raises an error if start date and end date are the same' do
-      proc{@new_front_desk.create_reservation(4, '2018-03-14', '2018-3-14')}.must_raise ArgumentError
+      proc{@new_front_desk.create_reservation(2, '2018-03-14', '2018-3-14')}.must_raise ArgumentError
     end
   end
 
@@ -63,7 +63,6 @@ describe 'FrontDesk class' do
       res_list = @new_front_desk.search_res_by_date('2018-03-14')
       res_list.must_be_kind_of Array
       res_list.length.must_equal 1
-      res_list[0].room_id.must_equal 4
     end
   end
 
@@ -86,9 +85,9 @@ describe 'FrontDesk class' do
 
   describe 'res_cost method' do
     before do
-      @new_front_desk.create_reservation(4, '2018-03-09', '2018-3-24')
-      @new_front_desk.create_reservation(5, '2018-03-10', '2018-3-14')
-      @new_front_desk.create_reservation(6, '2018-03-15', '2018-3-30')
+      @new_front_desk.create_reservation(1, '2018-03-09', '2018-3-24')
+      @new_front_desk.create_reservation(2, '2018-03-10', '2018-3-14')
+      @new_front_desk.create_reservation(5, '2018-03-15', '2018-3-30')
     end
     it 'can return the total cost of selected reservation' do
       @new_front_desk.res_cost(1).must_equal 3000
@@ -131,8 +130,8 @@ describe 'FrontDesk class' do
 
   describe 'find_available_rooms method' do
     before do
-      @new_front_desk.create_reservation(1, '2018-03-09', '2018-03-24')
-      @new_front_desk.create_reservation(2, '2018-03-10', '2018-03-14')
+      @new_front_desk.create_reservation(4, '2018-03-09', '2018-03-24')
+      @new_front_desk.create_reservation(5, '2018-03-10', '2018-03-14')
       @new_front_desk.create_reservation(6, '2018-03-12', '2018-03-30')
     end
     it 'can return a list of available rooms' do
@@ -140,7 +139,7 @@ describe 'FrontDesk class' do
       avail_list.length.must_equal 17
       avail_list.must_be_kind_of Array
       avail_list[0].must_be_kind_of Integer
-      avail_list[0].must_equal 3
+      avail_list[0].must_equal 1
     end
   end
 end

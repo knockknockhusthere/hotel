@@ -79,17 +79,6 @@ module Hotel
       end
       return available_rooms
     end
-    # def find_available_rooms(start_date, end_date)
-    #   available_rooms = @room_list
-    #   @reservations.each do |res|
-    #     if available_rooms.include?(res.room_id)
-    #       date_range = (res.start_date...res.end_date).to_a
-    #       if date_range.include?(start_date) || date_range.include?(end_date)
-    #         available_rooms.delete(res.room_id)
-    #       end#end if
-    #     end#end if
-    #   end#end each
-    #   return available_rooms
-    # end#end find_available_rooms method
+  
   end
 end
