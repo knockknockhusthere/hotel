@@ -14,7 +14,7 @@ describe 'FrontDesk class' do
     it 'can create a array of 20 instances of rooms' do
       @new_front_desk.rooms_list.length.must_equal 20
       @new_front_desk.rooms_list.must_be_kind_of Array
-      # @new_front_desk.rooms_list[0].must_be_instance_of Hotel::Room
+      @new_front_desk.rooms_list[0].must_be_instance_of Hotel::Room
     end
   end
 
@@ -145,6 +145,7 @@ describe 'FrontDesk class' do
       avail_list[0].must_be_kind_of Integer
       avail_list[0].must_equal 1
     end
+
     it 'Informs the user no rooms are available' do
       20.times do |i| @new_front_desk.create_reservation(i+1,'2018-03-10', '2018-03-16')
         i += 1
