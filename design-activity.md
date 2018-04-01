@@ -53,3 +53,7 @@ Implementation B
 
 Bonus question once you've read Metz ch. 3: Which implementation is more loosely coupled?
 Implementation B
+
+
+Hotel:
+I would implement a DateRange class that evaluates the dates, overlaps and availability. Or a room class, that can tell the frontdesk if it is available.
